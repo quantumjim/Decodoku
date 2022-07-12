@@ -6,18 +6,18 @@ from retworkx.visualization import mpl_draw
 
 class Decodoku():
     
-    def __init__(self, p=0.1, k=2, d=10, process=None, errors=None):
+    def __init__(self, p=0.1, k=2, d=10, process=None, errors=None, nonabelian=False):
         
         self.p = p
         self.k = k
         self.d = d
         self.process = process
         self.decoder = (self.process!=None)
-        
         if errors:
             self.errors = errors
         else:
             self.errors = []
+        self.nonabelian = nonabelian
             
         self.L = d+1
         
@@ -186,7 +186,14 @@ class Decodoku():
                 if syndrome[x,y]%d!=0:
                     if x not in [0, engine.L-1]:
                         if d!=2:
-                            engine.screen.pixel[x,y].set_text(str(syndrome[x,y]%d))
+                            if not self.nonabelian:
+                                engine.screen.pixel[x,y].set_text(str(syndrome[x,y]%d))
+                            else:
+                                if syndrome[x,y]%d==d/2:
+                                    engine.screen.pixel[x,y].set_text('Λ')
+                                else:
+                                    engine.screen.pixel[x,y].set_text('Φ')
+                                
                         engine.screen.pixel[x,y].set_color('red')
 
         engine.screen.pixel['text'].set_text('Choose node with an error')
@@ -219,7 +226,13 @@ class Decodoku():
                     else:
                         if x not in [0,engine.L-1]:
                             if d!=2:
-                                engine.screen.pixel[x,y].set_text(str(syndrome[x,y]%d))
+                                if not self.nonabelian:
+                                    engine.screen.pixel[x,y].set_text(str(syndrome[x,y]%d))
+                                else:
+                                    if syndrome[x,y]%d==d/2:
+                                        engine.screen.pixel[x,y].set_text('Λ')
+                                    else:
+                                        engine.screen.pixel[x,y].set_text('Φ')
                             engine.screen.pixel[x,y].set_color('red')
 
                 engine.pressed_pixels = []
